@@ -1,0 +1,184 @@
+ -- 관리자테이블
+create table admin_tbl(
+    a_id varchar2(50) not null,
+    a_pw varchar2(50) not null,
+    a_name varchar2(50) not null,
+    PRIMARY KEY(a_id)
+);
+insert into admin_tbl values('admin','1234','관리자');
+select * from admin_tbl;
+
+-- 회원테이블(회원번호, 아이디, 비밀번호, 이름, 성별(M/F), 생년월일, 전화번호, 주소, 이메일, 운전면허증, 면허발급일, 면허만료일, 회원가입일, 탈퇴유무)
+create table member_tbl(
+    M_NO number UNIQUE not null,
+    M_ID varchar2(30) primary key,
+    M_PW varchar2(30) not null,
+    M_NAME varchar2(20) not null,
+    M_GENDER char(1) not null, 
+    M_BRD char(8) not null,
+    M_PHONE char(11) not null,
+    M_ADD varchar2(200) not null,
+    M_EMAIL varchar2(100) not null,
+    M_DLNUM char(12),
+    M_STDATE char(8),
+    M_ENDATE char(8),
+    M_JOINDATE date default sysdate,
+    M_EXIT char(6)
+    );
+
+-- 상품테이블(상품번호, 차량명, 차량번호, 차량종류, 탑승인승, 연료, 연식, 색상, 대여자격, 특이사항, 상세정보, 종합보험, 차량사진, 기본대여비, 자차면책, 대여가능여부)
+create table car_tbl(    
+    C_NO number UNIQUE not null,
+    C_NAME varchar2(100) not null,
+    C_NUM varchar2(100) primary key,
+    C_TYPE varchar2(100) not null,
+    C_SEATER varchar2(100) not null,
+    C_FUEL varchar2(100) not null,
+    C_YEAR varchar2(100) not null,
+    C_COLOR varchar2(100) not null,
+    C_CRT varchar2(100) not null,
+    C_ELSE varchar2(100),
+    C_DET varchar2(4000) not null,
+    C_INS varchar2(4000) not null,
+    C_RENTALRATE varchar2(100) not null,
+    c_image varchar2(500),
+    C_SII varchar(100) not null,
+    C_RENT varchar2(100) default '대여가능',
+    C_date date default sysdate
+    );
+
+--  예약테이블(예약순번, 예약번호, 이용금액, 반납예정일시, 대여예정일시, 실대여일시, 실반납일시, 전체손해면책제도, 자동차 표준대여 약관동의, 취소및위약금규정동의, 대여자격확인동의, 추가비용, 초과시간, 예약상태, 취소상태)
+--  FK(회원아이디(M_ID), 차량번호(C_NUM)
+create table reserve_tbl(
+    R_NO number UNIQUE not null,
+    R_NUM varchar2(50) primary key,
+    R_PRICE varchar2(30),
+    R_PRERENTALDATE DATE,
+    R_PRERETURNDATE DATE,
+    R_RENTALDATE DATE,
+    R_RETURNDATE DATE,
+    R_EXSYSTEM CHAR(1),
+    R_CARSTANDARD CHAR(1), 
+    R_CANCEL CHAR(1), 
+    R_QUALIFICATION CHAR(1), 
+    R_EXCHARGE varchar2(30),
+    R_EXTIME DATE, 
+    R_STATUS varchar2(50), 
+    R_CANCELSTATUS varchar2(50),
+    M_ID varchar2(50), 
+    C_NUM varchar2(50),
+    R_DATE DATE,
+    CONSTRAINT reserve_M_ID_FK FOREIGN KEY(M_ID)
+    REFERENCES member_tbl(M_ID) ON DELETE CASCADE,
+    CONSTRAINT reserve_C_NUM_FK FOREIGN KEY(C_NUM)
+    REFERENCES car_tbl(C_NUM) ON DELETE CASCADE
+ );
+ 
+-- 문의사항테이블(게시글번호, 게시글비밀번호, 게시글제목, 게시글본문, 게시글첨부파일, 게시글작성자, 게시글작성일, 답글상태, 아이디)
+--  FK(회원아이디(M_ID))
+create table QUESTION_TBL(
+    Q_NUM number primary key,
+    Q_PWD varchar2(50) not null,
+    Q_TITLE varchar2(1000) not null,
+    Q_CONTENT varchar2(4000) not null,
+    Q_FILE varchar2(500),
+    Q_DATE DATE not null,
+    Q_RPSTATE varchar2(20) DEFAULT '미답변',
+    M_ID varchar2(50) not null,
+
+    CONSTRAINT QUESTION_M_ID_FK FOREIGN KEY(M_ID)
+    REFERENCES member_tbl(M_ID) ON DELETE CASCADE
+ );
+ 
+-- 답글테이블(답글번호, 답글작성자, 답글제목, 답글본문, 답글작성일)
+-- FK(게시글번호(I_NO)
+create table REPLY_TBL(
+    RP_NUM number primary key,
+    RP_NAME varchar2(30) not null,
+    RP_TITLE varchar2(100) not null,
+    RP_CONTENT varchar2(500) not null,
+    RP_PWD varchar2(50) not null,
+    RP_DATE date not null,
+    Q_NUM number not null,
+   
+    CONSTRAINT REPLY_TBL_FK FOREIGN KEY(Q_NUM)
+    REFERENCES QUESTION_TBL(Q_NUM) ON DELETE CASCADE
+ );
+ 
+ 
+-- 공지사항테이블(공지사항번호, 공지사항제목, 공지사항본문, 공지사항작성일, 공지사항조회수) 
+create table notice_tbl(
+n_num number not null,
+n_title varchar2(1000) not null,
+n_content varchar2(4000) not null,
+n_writer varchar2(10) default '관리자',
+n_date date default sysdate
+);
+
+
+
+--시퀀스 
+ 
+create sequence notice_seq
+start with 1
+increment by 1
+nocycle;
+ 
+-- 회원테이블 회원번호(M_NO) 시퀀스
+create SEQUENCE member_seq
+INCREMENT by 1
+start with 1
+minvalue 1
+maxvalue 1000000
+nocycle
+cache 10;
+
+-- 상품테이블 상품번호(C_NO) 시퀀스
+create SEQUENCE car_seq
+INCREMENT by 1
+start with 1
+minvalue 1
+maxvalue 1000000
+nocycle
+cache 10;
+
+-- 예약테이블 예약순번(R_NO) 시퀀스
+create SEQUENCE reserve_seq
+INCREMENT by 1
+start with 1
+minvalue 1
+maxvalue 1000000
+nocycle
+cache 10;
+
+-- 문의사항테이블 게시글번호(I_NO) 시퀀스
+create SEQUENCE inquire_seq
+INCREMENT by 1
+start with 1
+minvalue 1
+maxvalue 1000000
+nocycle
+cache 10;
+
+-- 답글테이블 답글번호(RP_NO) 시퀀스
+create SEQUENCE reply_seq
+INCREMENT by 1
+start with 1
+minvalue 1
+maxvalue 1000000
+nocycle
+cache 10;
+
+-- 공지사항테이블 공지사항번호(N_NO) 시퀀스
+create SEQUENCE notis_seq
+INCREMENT by 1
+start with 1
+minvalue 1
+maxvalue 1000000
+nocycle
+cache 10;
+
+create sequence question_seq
+start with 1
+increment by 1
+nocycle;

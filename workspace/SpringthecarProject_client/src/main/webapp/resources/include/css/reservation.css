@@ -1,0 +1,199 @@
+
+#search {
+	margin-top: 200px;
+	height: 3000px;
+	padding: 0;
+}
+
+hr {
+	border-top: solid 3px #2828CD;
+}
+/* 첫 줄(사진,설명) */
+#div1 {
+	width: 1100px;
+	margin: 0 auto;
+	position: relative;
+	text-align: center;
+	margin-top: 20px;
+}
+
+#div1 .image {
+	width: 40%;
+	height: 350px;
+	float: left;
+}
+
+#div1 #dididi2 {
+	width: 60%;
+	float: right;
+	height: 350px;
+}
+.namecar{
+	margin-top: 30px;
+	margin-left:40px;
+	text-align: left;
+	font-weight: 900;
+	font-size: 30pt;
+	color: #1E3269;
+}
+.infocar{
+	margin-top: 20px;
+	margin-left:40px;
+	text-align: left;
+	font-weight: 600;
+	font-size: 12pt;
+}
+.add{
+	margin: 0 auto;
+	position: relative;
+	margin-top: 20px;
+	width: 100%;
+}
+.h3Text{
+	color: #1E3269;
+	height: 150px;	
+	position: relative;
+	text-align: center;
+}
+.h3Text_1{
+	margin-left:40px;
+	font-weight: 700;
+	font-size: 13pt;
+	text-align: left;	
+}
+.lebleText{
+	font-weight: 600;
+	font-size: 13pt;
+	color: #0000FF;
+}
+/* 둘째 줄 */
+.logo {
+	width: 60px;
+	height: 40px;
+	position: static;
+	float: left;
+}
+
+.logoText {
+	float: left;
+	position: relative;
+	margin-left: 3px;
+	margin-top: 5px;
+	font-weight: bolder;
+	font-size: 20pt;
+}
+
+#div2 {
+	margin: 0 auto;
+	margin-top: 370px;
+	width: 1100px;
+	height: 191px;
+	position: relative;
+	text-align: center;
+	font-family: "gulim";
+}
+.label1 {
+	margin-left: 20px;
+	width: 45%;
+	height: 50px;
+	float: left;
+}
+.label2 {
+	margin-left: 20px;
+	width: 45%;
+	height: 50px;
+	float: right;
+}
+.label3 {
+	margin-left: 20px;
+	width: 50%;
+	height: 50px;
+	float: left;
+}
+.label1_1 {
+	float: left;
+	color: #00008C;
+	font-size: 15pt;
+	font-weight: 900;
+}
+.label1_2 { float: right; font-weight: 700; }
+.label3_2 { margin-top: 5px; float: right;}
+
+
+/* 3 */
+#div3 {
+	margin: 0 auto;
+	margin-top: 50px;
+	width: 1100px;
+	height: 191px;
+	position: relative;
+	text-align: center;
+	font-family: "gulim";
+}
+
+#div4 {
+	margin: 0 auto;
+	margin-top:80px;
+	width: 1100px;
+	height: 191px;
+	position: relative;
+	text-align: center;
+	font-family: "gulim";
+}
+#div5 {
+	margin: 0 auto;
+	margin-top:130px;
+	width: 1100px;
+	height: 191px;
+	position: relative;
+	text-align: center;
+	font-family: "gulim";
+}
+.div4_1 {
+	margin-left: 20px;
+	width: 100%;
+	height: 40px;
+	float: left;
+}
+.div4_label1_1 {
+	float: left;
+	color: #00008C;
+	font-size: 15pt;
+	font-weight: 900;
+	width: 20%;
+	text-align: left;
+}
+.div4_label1_2{
+	font-weight: 700;
+	width: 80%;
+	text-align: left;
+}
+.cusText{
+	float: left;
+	border-color: #28288C;
+	width: 50px;
+}
+
+#div6 {
+	margin: 0 auto;
+	margin-top:80px;
+	width: 1100px;
+	height: 230px;
+	position: relative;
+	text-align: center;
+	font-family: "gulim";
+}
+
+textarea{
+	width: 100%;
+	height: 100px;
+}
+.div5_1{
+	margin-top: 5px;
+	margin-left: 10px;
+	text-align: left;
+	font-weight: 700;
+}
+.btn{
+	width: 200px;
+}

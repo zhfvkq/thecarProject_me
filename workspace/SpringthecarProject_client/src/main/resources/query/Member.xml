@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.thecar.client.member.dao.MemberDao">
+
+	<select id="securitySelect" parameterType="String"
+		resultType="security">
+		select m_id, salt from member_tbl
+		where m_id=#{m_id}
+	</select>
+
+	<insert id="securityInsert" parameterType="security">
+		insert into
+		security(m_id, salt)
+		values(#{m_id}, #{salt})
+	</insert>
+
+	<delete id="securityDelete" parameterType="String">
+		delete from security
+		where userId = #{userId}
+	</delete>
+
+	<select id="memberSelect" parameterType="String"
+		resultType="member">
+		select
+		m_no,m_id,m_pw,m_name,m_gender,m_brd,m_phone,m_add,m_email,m_dlnum,m_stDate,m_enDate,to_char(m_joindate,'YYYY-MM-DD'),m_exit
+		from member_tbl
+		where m_id = #{m_id}
+	</select>
+
+	<insert id="memberInsert" parameterType="member">
+		<selectKey keyProperty="m_no" resultType="int"
+			order="BEFORE">
+			SELECT
+			member_seq.nextval FROM dual
+		</selectKey>
+		insert into
+		member_tbl
+		(m_no,
+		m_id,
+		m_pw,
+		m_name,
+		m_gender,
+		m_brd,
+		m_phone,
+		m_add,
+		m_email,
+		m_dlnum,
+		m_stDate,
+		m_enDate,
+		m_joindate,
+		m_exit)
+		values(#{m_no},
+		#{m_id},
+		#{m_pw},
+		#{m_name},
+		#{m_gender},
+		#{m_brd},
+		#{m_phone},
+		#{m_add},
+		#{m_email},
+		#{m_dlnum},
+		#{m_stDate},
+		#{m_enDate},
+		sysdate,
+		#{m_exit})
+	</insert>
+
+	<update id="memberUpdate" parameterType="member">
+		update member_tbl set
+		m_pw=#{m_pw}, m_phone=#{m_phone}, m_name=#{m_name},
+		m_email=#{m_email}, m_add=#{m_add}, m_dlnum=#{m_dlnum},
+		m_stDate=#{m_stDate}, m_enDate=#{m_enDate}, m_exit=#{m_exit}
+		where
+		m_id=#{m_id}
+	</update>
+
+	<delete id="memberDelete" parameterType="String">
+		delete from
+		spring_member where userId = #{userId}
+	</delete>
+</mapper>

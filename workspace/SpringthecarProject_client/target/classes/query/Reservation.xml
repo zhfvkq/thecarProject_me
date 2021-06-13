@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.thecar.client.reservation.dao.ReservationDao">
+
+	<insert id="reservationInsert" parameterType="reservation">
+		insert into
+		reserve_tbl(r_no, r_num, r_price, r_prereturnDate,
+		r_prerentalDate,
+		r_returnDate, r_rentalDate, r_exsystem,
+		r_carstandard,
+		r_cancel,
+		r_qualification, r_excharge, r_extime,
+		r_status,
+		r_cancelstatus, m_id,
+		c_num, r_date )
+		values(reserve_seq.nextval,to_char(sysdate,'yyyyMMddhh24miss'),#{r_price},to_date(#{r_prereturnDate},'yyyy-MM-dd
+		hh24:mi'),to_date(#{r_prerentalDate},'yyyy-MM-dd
+		hh24:mi'),'','','1','1','1','1','','','예약완료','인수대기',#{m_id},#{c_num},sysdate)
+	</insert>
+
+	<select id="selectSearch" parameterType="reservation"
+		resultType="reservation">
+		select *
+		from reserve_tbl
+		where m_id=#{m_id} and
+		r_prerentaldate >= sysdate
+	</select>
+
+	<select id="searchNonMember" parameterType="string"
+		resultType="string">
+		select m_id
+		from member_tbl
+		where m_name=#{m_name} and
+		m_phone=#{m_phone}
+	</select>
+
+</mapper>
+

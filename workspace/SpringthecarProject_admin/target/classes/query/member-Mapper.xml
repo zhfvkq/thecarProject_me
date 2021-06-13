@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.thecar.admin.member.dao.MemberDAO">
+	
+	<!-- 페이징 카운트 -->
+	<select id="selectMemberListCnt" resultType="int" parameterType="com.thecar.common.vo.Paging">
+		SELECT COUNT(*)
+		  FROM (
+		        SELECT ROW_NUMBER() OVER(ORDER BY T1.M_NO DESC) AS ROW_NUM 
+		             , T1.M_NO
+		             , T1.M_ID
+		             , T1.M_PW
+		             , T1.M_NAME
+		             , T1.M_GENDER
+		             , T1.M_BRD
+		             , T1.M_PHONE
+		             , T1.M_ADD
+		             , T1.M_EMAIL
+		             , T1.M_DLNUM
+		             , T1.M_JOINDATE
+		             , T1.M_EXIT
+		            FROM MEMBER_TBL T1
+		           WHERE 1=1
+		           
+		      ) R1
+		WHERE 1=1
+	</select>
+	<!-- 
+	<if test='m_name != null and m_name != ""'>
+		AND T1.M_NAME = #{m_name}
+	</if>
+	<if test='m_id != null and m_id != ""'>
+		AND T1.M_ID = #{m_id}
+	</if>
+	<if test='m_exit != null and m_exit != ""'>
+		AND T1.M_EXIT = #{m_exit}
+	</if>
+	 -->
+	<!-- 회원리스트 -->
+	<select id="selectMemberList" resultType="com.thecar.admin.member.vo.AdminMemberVO" parameterType="com.thecar.common.vo.Paging">
+		SELECT *
+		  FROM (
+		        SELECT ROW_NUMBER() OVER(ORDER BY T1.M_NO DESC) AS ROW_NUM 
+		             , T1.M_NO
+		             , T1.M_ID
+		             , T1.M_PW
+		             , T1.M_NAME
+		             , T1.M_GENDER
+		             , T1.M_BRD
+		             , T1.M_PHONE
+		             , T1.M_ADD
+		             , T1.M_EMAIL
+		             , T1.M_DLNUM
+		             , T1.M_JOINDATE
+		             , T1.M_EXIT
+		            FROM MEMBER_TBL T1
+		           WHERE 1=1
+		           
+		      ) R1
+		WHERE 1=1
+		  AND ROW_NUM BETWEEN #{firstRecordIndex} AND #{lastRecordIndex}
+	</select>
+	<!-- 
+	<if test='m_name != null and m_name != ""'>
+		AND T1.M_NAME = #{m_name}
+	</if>
+	<if test='m_id != null and m_id != ""'>
+		AND T1.M_ID = #{m_id}
+	</if>
+	<if test='m_exit != null and m_exit != ""'>
+		AND T1.M_EXIT = #{m_exit}
+	</if>
+	 -->
+	
+	
+
+	
+	<!-- 분류별 검색 -->
+	<!--  <sql id="searchType" >
+		<if test="searchType != null">
+	
+			select from member_tbl
+			<where>
+			<if test='searchType == "".toString()'>
+				select * from member_tbl
+			</if>
+			<if test="searchType == 'a'.toString()">
+				and m_id like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType == 'b'.toString()">
+				and m_name like CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="searchType == 'c'.toString()">
+				and m_exit like CONCAT('%', #{keyword}, '%')
+			</if>
+
+		</where>
+	</if>
+	</sql>	 -->
+		
+		<!-- 검색 조건에 해당하는 전체 게시물 수 조회 -->
+	<!-- <select id="gettotalcount" resultType="int">
+		select count(bno)
+		from board
+		where bno > 0
+		<include refid="searchCondition"></include>
+	</select> -->
+	
+	
+	
+	<!-- <resultMap type="#modelname" id="YourResultSet">
+		<id property="param1" column="columnname1" />
+		<result property="param2" column="columnname2" />
+		<result property="param3" column="columnname3" />
+	</resultMap> -->
+
+	<!-- <select id="getAll" resultMap="YourResultSet">
+		SELECT * FROM tablename1
+	</select> -->
+
+	<!-- <insert id="insertSomething" parameterType="#modelname">
+		INSERT INTO tablename1 (columnname1, columnname2, columnname3)
+		VALUES(#{value1},#{value2},#{value3})
+	</insert> -->
+
+	<!-- <update id="updateSomething" parameterType="#modelname">
+		UPDATE tablename1
+		SET
+		columnname1=#{param1}
+		WHERE
+		columnname2 = #{param2}
+	</update>
+
+	<delete id="deleteSomething" parameterType="int">
+		DELETE FROM tablename1 WHERE
+		columnname1 = #{param1}
+	</delete> -->
+
+</mapper>

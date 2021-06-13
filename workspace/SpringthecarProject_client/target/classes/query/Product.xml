@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.thecar.client.product.dao.ProductDao">
+
+	<!-- 예약 가능 차량 조회 -->
+	<select id="productSelctList" parameterType="product"
+		resultType="product">
+	<![CDATA[
+		select c.c_no,c.c_name, c.c_num, c.c_type, c.c_seater, c.c_fuel, c.c_year, c.c_color, c.c_crt, c.c_else, c.c_det, c.c_ins, c.c_rentalrate, c.c_sii, c.c_rent, c.c_date
+	 	from car_tbl c left outer join reserve_tbl r on c.c_num = r.c_num 
+	 	where 
+		((r.r_prereturndate<to_date(#{r_prerentalDate},'yyyyMMddhh24mi') and r.r_prereturndate<to_date(#{r_prereturnDate},'yyyyMMddhh24mi'))
+   	  or (r.r_prerentaldate>to_date(#{r_prerentalDate},'yyyyMMddhh24mi') and r.r_prerentaldate>to_date(#{r_prereturnDate},'yyyyMMddhh24mi')))
+		union
+	    select c.c_no,c.c_name, c.c_num, c.c_type, c.c_seater, c.c_fuel, c.c_year, c.c_color, c.c_crt, c.c_else, c.c_det, c.c_ins, c.c_rentalrate, c.c_sii, c.c_rent, c.c_date
+	 	from car_tbl c left outer join reserve_tbl r on c.c_num = r.c_num 
+	 	where r.c_num is null
+	 	]]>
+
+	</select>
+
+	<!-- 예약할 차량 조회 -->
+	<select id="productSelect" parameterType="product"
+		resultType="product">
+		select *
+		from car_tbl
+		where c_num = #{c_num}
+	</select>
+
+	<!-- 차량 전체 조회 -->
+	<select id="productList" parameterType="product"
+		resultType="product">
+		select * from car_tbl
+	</select>
+
+</mapper>

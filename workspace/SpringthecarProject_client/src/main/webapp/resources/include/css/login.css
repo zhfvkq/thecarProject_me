@@ -1,0 +1,52 @@
+#loginForm{ margin-top:300px; height: 500px;  font-family: "Museo Slab";}
+#reservationCheck1_Form{ margin-top:300px; height: 500px;  font-family: "Museo Slab";}
+
+.body{
+	height: 200px;
+	width:400px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.text-control{
+	width: 400px;
+	height: 40px;
+	float: left; 
+	display: block;
+  padding: 0.375rem 0.75rem;
+  font-size: 10pt;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	
+}
+#loginBtn{
+margin-top: 15px;
+}
+#reservationCheck1Btn{
+margin-top: 15px;
+}
+.label-font{
+	font-size: 13pt;
+	float: left;
+	margin-left:0px;
+	margin-top: 5px;
+}
+.find{
+	font-size: 11pt;
+	font-weight:600;
+	float: left;
+	text-align: left;
+	margin-top: 3px;
+}
+.login-form-group{height: 50px; width: 100%;}
+
+.text-primary{
+	margin-left: -60px;
+	margin-top: -30px;
+}

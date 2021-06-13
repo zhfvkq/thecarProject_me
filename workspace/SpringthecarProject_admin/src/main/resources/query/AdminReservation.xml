@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.thecar.admin.reservation.dao.AdminReservationDao">
+
+	<resultMap type="member" id="member">
+		<result column="m_name" property="m_name" />
+		<result column="m_phone" property="m_phone" />
+	</resultMap>
+
+	<resultMap type="adminReservation" id="adminReservation">
+		<result column="r_num" property="r_num" />
+		<result column="r_price" property="r_price" />
+		<result column="r_prereturndate" property="r_prereturndate" />
+		<result column="r_prerentaldate" property="r_prerentaldate" />
+		<result column="r_rentaldate" property="r_rentaldate" />
+		<result column="r_returndate" property="r_returndate" />
+		<result column="excharge" property="excharge" />
+		<result column="extime" property="extime" />
+		<result column="r_status" property="r_status" />
+		<result column="r_cancelstatus" property="r_cancelstatus" />
+		<result column="m_id" property="m_id" />
+		<result column="r_returndate" property="r_returndate" />
+		<result column="c_num" property="c_num" />
+		<result column="r_date" property="r_date" />
+		<collection property="adminMemberVO" resultMap="member" />
+	</resultMap>
+
+	<!-- 예약완료 총 게시글 갯수 출력 -->
+	<select id="reservationCnt" resultType="int">
+		SELECT NVL(count(1), 0)
+		FROM (SELECT list.*, ROWNUM AS RNUM FROM ( select r_num from
+		reserve_tbl where r_status = '예약완료') list)
+	</select>
+
+	<!-- 페이징 처리 후 예약완료 조회 -->
+	<select id="selectReservationList" resultMap="adminReservation">
+		select *
+		from (
+		select
+		rownum as recNum,
+		r_num,
+		m_id,
+		m_name,
+		m_phone,
+		r_status,
+		c_num,
+		r_prerentaldate,
+		r_rentaldate,
+		r_prereturndate,
+		r_returndate,
+		r_date,
+		r_price
+		from
+		(SELECT r.r_num,
+		r.m_id, m.m_name, m.m_phone, r.r_status,
+		r.c_num,
+		r.r_rentaldate, r.r_prerentaldate, r.r_returndate,
+		r.r_prereturndate, r.r_date, r.r_price FROM
+		reserve_tbl r Join
+		member_tbl m on r.m_id = m.m_id WHERE r.r_status =
+		'예약완료' ORDER BY
+		r.r_num DESC)
+		)
+		where recNum between (#{page}-1)*10+1 and
+		#{page}*10
+	</select>
+
+	<!-- 대여중 변경 -->
+	<update id="rentalUpdate" parameterType="adminReservation">
+		UPDATE reserve_tbl r
+		SET
+		r.r_status = '대여중', r.r_rentaldate = sysdate
+		WHERE r.r_num = #{r_num}
+	</update>
+
+	<!-- 대여완료 총 게시글 갯수 출력 -->
+	<select id="countRentalCnt" resultType="int">
+		SELECT NVL(count(1), 0)
+		FROM (SELECT list.*, ROWNUM AS RNUM FROM ( select r_num from
+		reserve_tbl where r_status = '대여중') list)
+	</select>
+
+	<!-- 페이징 처리 후 대여완료 조회 -->
+	<select id="selectRentalList" resultMap="adminReservation">
+		select *
+		from (
+		select
+		rownum as recNum,
+		r_num,
+		m_id,
+		m_name,
+		m_phone,
+		r_status,
+		c_num,
+		r_prerentaldate,
+		r_rentaldate,
+		r_prereturndate,
+		r_returndate,
+		r_date,
+		r_price
+		from
+		(SELECT r.r_num,
+		r.m_id, m.m_name, m.m_phone, r.r_status,
+		r.c_num,
+		r.r_rentaldate, r.r_prerentaldate, r.r_returndate,
+		r.r_prereturndate, r.r_date, r.r_price FROM
+		reserve_tbl r Join
+		member_tbl m on r.m_id = m.m_id WHERE r.r_status =
+		'대여중' ORDER BY
+		r.r_num DESC)
+		)
+		where recNum between (#{page}-1)*10+1 and
+		#{page}*10
+	</select>
+
+
+	<!-- 반납완료 변경 -->
+	<update id="returnUpdate" parameterType="adminReservation">
+		UPDATE reserve_tbl r
+		SET
+		r.r_status = '반납완료', r.r_returndate = sysdate
+		WHERE r.r_num = #{r_num}
+	</update>
+
+	<!-- 반납완료 총 게시글 갯수 출력 -->
+	<select id="returnCnt" resultType="int">
+		SELECT NVL(count(1), 0)
+		FROM
+		(SELECT list.*, ROWNUM AS RNUM FROM ( select r_num from
+		reserve_tbl
+		where r_status = '반납완료') list)
+	</select>
+
+	<!-- 페이징 처리 후 반납완료 조회 -->
+	<select id="selectReturnList" resultMap="adminReservation">
+		select *
+		from (
+		select
+		rownum as recNum,
+		r_num,
+		m_id,
+		m_name,
+		m_phone,
+		r_status,
+		c_num,
+		r_prerentaldate,
+		r_rentaldate,
+		r_prereturndate,
+		r_returndate,
+		r_date,
+		r_price
+		from
+		(SELECT r.r_num,
+		r.m_id, m.m_name, m.m_phone, r.r_status,
+		r.c_num,
+		r.r_rentaldate, r.r_prerentaldate, r.r_returndate,
+		r.r_prereturndate, r.r_date, r.r_price FROM
+		reserve_tbl r Join
+		member_tbl m on r.m_id = m.m_id WHERE r.r_status =
+		'반납완료' ORDER BY
+		r.r_num DESC)
+		)
+		where recNum between (#{page}-1)*10+1 and
+		#{page}*10
+	</select>
+
+	<!-- 취소요청 총 게시글 갯수 출력 -->
+	<select id="cancelCnt" resultType="int">
+		SELECT NVL(count(1), 0)
+		FROM
+		(SELECT list.*, ROWNUM AS RNUM FROM ( select r_num from
+		reserve_tbl
+		where r_cancelstatus = '취소요청') list)
+	</select>
+
+	<!--취소요청 목록 조회 -->
+	<select id="cancelList" resultMap="adminReservation">
+		select *
+		from (
+		select
+		rownum as
+		recNum,
+		r_num,
+		m_id,
+		m_name,
+		m_phone,
+		r_status,
+		r_cancelstatus,
+		c_num,
+		r_prerentaldate,
+		r_rentaldate,
+		r_prereturndate,
+		r_returndate,
+		r_date,
+		r_price
+		from
+		(SELECT r.r_num,
+		r.m_id, m.m_name, m.m_phone,
+		r.r_status,
+		r_cancelstatus,
+		r.c_num,
+		r.r_rentaldate, r.r_prerentaldate,
+		r.r_returndate,
+		r.r_prereturndate, r.r_date, r.r_price FROM
+		reserve_tbl
+		r Join
+		member_tbl m on r.m_id = m.m_id WHERE r.r_cancelstatus =
+		'취소요청'
+		ORDER BY
+		r.r_num DESC)
+		)
+		where recNum between (#{page}-1)*10+1 and
+		#{page}*10
+	</select>
+
+	<!-- 취소완료 변경 -->
+	<update id="cancelOk" parameterType="adminReservation">
+		UPDATE reserve_tbl r
+		SET
+		r.r_cancelstatus = '취소완료', r.r_status = null, r.r_prerentaldate =
+		null, r.r_prereturndate = null, r.r_price = null
+		WHERE r.r_num =
+		#{r_num}
+	</update>
+
+	<!-- 취소완료 총 게시글 갯수 출력 -->
+	<select id="cancelOkCnt" resultType="int">
+		SELECT NVL(count(1), 0)
+		FROM
+		(SELECT list.*, ROWNUM AS RNUM FROM ( select r_num from
+		reserve_tbl
+		where r_cancelstatus = '취소완료') list)
+	</select>
+
+	<!--취소완료 목록 조회 -->
+	<select id="cancelOkList" resultMap="adminReservation">
+		select *
+		from (
+		select
+		rownum
+		as
+		recNum,
+		r_num,
+		m_id,
+		m_name,
+		m_phone,
+		r_status,
+		r_cancelstatus,
+		c_num,
+		r_prerentaldate,
+		r_rentaldate,
+		r_prereturndate,
+		r_returndate,
+		r_date,
+		r_price
+		from
+		(SELECT r.r_num,
+		r.m_id, m.m_name, m.m_phone,
+		r.r_status,
+		r_cancelstatus,
+		r.c_num,
+		r.r_rentaldate, r.r_prerentaldate,
+		r.r_returndate,
+		r.r_prereturndate, r.r_date, r.r_price FROM
+		reserve_tbl
+		r Join
+		member_tbl m on r.m_id = m.m_id WHERE r.r_cancelstatus =
+		'취소완료'
+		ORDER BY
+		r.r_num DESC)
+		)
+		where recNum between (#{page}-1)*10+1 and
+		#{page}*10
+	</select>
+
+</mapper>

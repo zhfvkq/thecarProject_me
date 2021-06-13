@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.thecar.admin.product.dao.AdminProductDao">
+
+	<!-- 등록 차량 검색 쿼리 분리 -->
+	<sql id="productCommon">
+		SELECT
+		c_no,
+		c_name,
+		c_num,
+		c_type,
+		c_seater,
+		c_fuel,
+		c_year,
+		c_color,
+		c_rentalrate,
+		c_rent,
+		c_date
+		FROM car_tbl
+		<where>
+			<if test="search=='c_num'">
+				<![CDATA[ c_num LIKE '%'|| #{keyword} ||'%' ]]>
+			</if>
+			<if test="search=='c_type'">
+				<![CDATA[ c_type LIKE '%'|| #{keyword} ||'%' ]]>
+			</if>
+			<if test="search=='c_name'">
+				<![CDATA[ c_name LIKE '%'|| #{keyword} ||'%' ]]>
+			</if>
+			<if test="search=='c_date'">
+				<![CDATA[ to_char(c_date,'YYYY-MM-DD') between 
+						#{start_date} and #{end_date}  ]]>
+			</if>
+
+		</where>
+	</sql>
+
+	<!-- 등록 차량 전체 조회 -->
+	<select id="adminProductList" parameterType="adminProduct"
+		resultType="adminProduct">
+
+		SELECT
+		c_no,
+		c_name,
+		c_num,
+		c_type,
+		c_seater,
+		c_fuel,
+		c_year,
+		c_color,
+		c_rentalrate,
+		c_rent,
+		TO_CHAR(c_date,'YYYY-MM-DD HH24:MI:SS') AS c_date
+		FROM
+		( SELECT
+		list.*,
+		ROWNUM AS RNUM
+		FROM (
+		<include refid="productCommon"></include>
+		<choose>
+			<when test="order_by=='c_no'">
+				ORDER BY c_no
+			</when>
+			<when test="order_by=='c_date'">
+				ORDER BY c_date
+			</when>
+		</choose>
+		<choose>
+			<when test="order_sc=='ASC'">
+				ASC
+			</when>
+			<when test="order_sc=='DESC'">
+				DESC
+			</when>
+		</choose>
+		) list
+		)
+		<where>
+			<if test="start_row != null and start_row != ''">
+				<if test="end_row != null and end_row != ''">
+					RNUM BETWEEN #{start_row} AND #{end_row}
+				</if>
+			</if>
+		</where>
+	</select>
+
+	<!-- 등록 차량 카운트 페이징 -->
+	<select id="adminProductListCnt" parameterType="adminProduct"
+		resultType="int">
+		SELECT NVL(count(1), 0) FROM
+		( SELECT list.*,
+		ROWNUM AS RNUM
+		FROM (
+		<include refid="productCommon"></include>
+		ORDER BY c_no desc
+		) list
+		)
+	</select>
+
+	<!-- 상세 페이지를 위한 등록 차량 조회 -->
+	<select id="adminProductDetail" parameterType="int"
+		resultType="adminProduct">
+		SELECT
+		c_no,
+		c_name,
+		c_num,
+		c_type,
+		c_seater,
+		c_fuel,
+		c_year,
+		c_color,
+		c_crt,
+		c_else,
+		c_det,
+		c_ins,
+		c_rentalrate,
+		c_sii,
+		c_rent,
+		c_image,
+		TO_CHAR(c_date,'YYYY-MM-DD HH24:MI:SS') AS c_date
+		FROM car_tbl
+		WHERE
+		c_no = #{c_no}
+	</select>
+
+	<!-- 차량 등록 -->
+	<insert id="adminProductInsert" parameterType="adminProduct">
+		<selectKey keyProperty="c_no" resultType="int"
+			order="BEFORE">
+			SELECT
+			car_seq.nextval from dual
+		</selectKey>
+		INSERT INTO car_tbl(
+		c_no,
+		c_name,
+		c_num,
+		c_type,
+		c_seater,
+		c_fuel,
+		c_year,
+		c_color,
+		c_crt,
+		c_else,
+		c_det,
+		c_ins,
+		c_rentalrate,
+		c_sii,
+		<if test="c_image != null and c_image != ''">
+			c_image,
+		</if>
+		c_date)
+
+		VALUES(
+		#{c_no},
+		#{c_name},
+		#{c_num},
+		#{c_type},
+		#{c_seater},
+		#{c_fuel},
+		#{c_year},
+		#{c_color},
+		#{c_crt},
+		#{c_else},
+		#{c_det},
+		#{c_ins},
+		#{c_rentalrate},
+		#{c_sii},
+		<if test="c_image != null and c_image != ''">
+			#{c_image},
+		</if>
+		sysdate)
+	</insert>
+
+	<!-- 등록 차량 수정 -->
+	<update id="adminProductUpdate" parameterType="adminProduct">
+		UPDATE car_tbl
+		SET
+		c_name = #{c_name},
+		c_num = #{c_num},
+		c_type =
+		#{c_type},
+		c_seater = #{c_seater},
+		c_fuel = #{c_fuel},
+		c_year =
+		#{c_year},
+		c_color = #{c_color},
+		c_crt = #{c_crt},
+		c_else = #{c_else},
+		c_det = #{c_det},
+		c_ins = #{c_ins},
+		c_rentalrate = #{c_rentalrate},
+		c_sii = #{c_sii},
+		<if test="c_image != ''"> c_image = #{c_image}, </if>
+		c_date = sysdate
+		WHERE
+		c_no = #{c_no}
+	</update>
+
+
+	<!-- 등록 차량 삭제 -->
+	<delete id="adminProductDelete" parameterType="adminProduct">
+		DELETE FROM
+		car_tbl
+		WHERE c_no = #{c_no}
+	</delete>
+</mapper>

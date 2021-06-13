@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.thecar.clinet.reservateion.dao.MyReservationDAO">
+
+	<select id="myReservationList" parameterType="hashMap"
+		resultType="com.thecar.client.reservation.vo.MyReservationVO">
+		<!-- 예약조회리스트 r_num; // 예약번호 c_num; // 차량명 r_exsystem; // 자차면책 r_prerentalDate; 
+			// 대여예정일 r_prereturnDate; // 반납예정일 r_rentalDate; // 실대여일시 r_returnDate; // 
+			실반납일시 r_price; // 이용금액 r_status; // 예약상태 String r_cancelStatus; // 취소상태(대여상태) -->
+		SELECT *
+		FROM (   
+		SELECT ROW_NUMBER() OVER(ORDER BY T1.M_NO DESC) AS
+		ROW_NUM
+		, T2.R_NUM
+		, T3.C_NAME 
+		, T2.R_EXSYSTEM
+		, TO_CHAR (T2.R_PRERENTALDATE, 'YYYY-MM-DD HH24:MI:SS' ) AS R_PRERENTALDATE
+		, TO_CHAR (T2.R_PRERETURNDATE, 'YYYY-MM-DD HH24:MI:SS' ) AS R_PRERETURNDATE
+		, TO_CHAR (T2.R_RENTALDATE, 'YYYY-MM-DD HH24:MI:SS' ) AS R_RENTALDATE
+		, TO_CHAR (T2.R_RETURNDATE, 'YYYY-MM-DD HH24:MI:SS' ) AS R_RETURNDATE
+		, T2.R_PRICE
+		,
+		T2.R_STATUS
+		, T2.R_CANCELSTATUS
+		, T1.M_ID
+		FROM MEMBER_TBL T1
+		INNER JOIN
+		RESERVE_TBL T2 ON T1.M_ID = T2.M_ID
+		INNER JOIN CAR_TBL T3 ON T2.C_NUM =
+		T3.C_NUM
+		WHERE 1=1
+		AND T1.M_ID = #{login.m_id}
+
+		) R1
+		WHERE 1=1
+		AND
+		ROW_NUM
+		BETWEEN #{paging.firstRecordIndex} AND
+		#{paging.lastRecordIndex}
+
+		<!-- M_ID = #{reservationVo.m_id} -->
+	</select>
+	<!-- "com.thecar.client.reservation.vo.ReservationVO" -->
+
+
+	<select id="myReservationCnt" parameterType="hashMap"
+		resultType="int">
+		<!-- 페이징 -->
+		SELECT COUNT(*)
+		FROM (
+		SELECT ROW_NUMBER() OVER(ORDER BY T1.M_NO DESC)
+		AS ROW_NUM
+		, T2.R_NUM
+		, T3.C_NAME
+		, T2.R_EXSYSTEM
+		, T2.R_PRERENTALDATE
+		,
+		T2.R_PRERETURNDATE
+		, T2.R_RENTALDATE
+		, T2.R_RETURNDATE
+		, T2.R_PRICE
+		,
+		T2.R_STATUS
+		, T2.R_CANCELSTATUS
+		, T1.M_ID
+		FROM MEMBER_TBL T1
+		INNER JOIN
+		RESERVE_TBL T2 ON T1.M_ID = T2.M_ID
+		INNER JOIN CAR_TBL T3 ON T2.C_NUM =
+		T3.C_NUM
+		WHERE 1=1
+		AND T1.M_ID = #{login.m_id}
+
+		) R1
+		WHERE 1=1
+	</select>
+
+
+	<!-- 취소요청 -->
+	<update id="reservationCancel"
+		parameterType="com.thecar.client.reservation.vo.MyReservationVO">
+		UPDATE RESERVE_TBL T1
+		SET
+		T1.R_CANCELSTATUS = '취소요청'
+		WHERE
+		T1.R_NUM = #{r_num}
+	</update>
+
+
+	<!-- <where> <if test='r_no != null and r_no !=""' > and r_no = #{r_no} 
+		</if> <if test='c_name != null and c_name != ""' > and c_name = #{c_name} 
+		</if> <if test = 'r_exsystem !=null and r_exsystem != ""' > and r_exsystem 
+		= #{r_exsystem} </if> <if test='r_prerentalDate !=null and r_prerentalDate 
+		!=""' > and r_prerentalDate =#{r_prerentalDate} </if> <if test='r_rentalDate 
+		!= null and r_rentalDate !=""' > and r_rentalDate = #{r_rentalDate} </if> 
+		<if test='r_returnDate != null and r_returnDate !=""' > and r_returnDate 
+		= #{r_returnDate} </if> <if test='r_price != null and r_price !=""' > and 
+		r_price = #{r_price} </if> <if test='r_status != null and r_status !=""' 
+		> and r_status = #{r_status} </if> <if test='r_rentstatus != null and r_rentstatus 
+		!=""' > and r_rentstatus = #{r_rentstatus} </if> </where> -->
+</mapper>	

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>
+		<typeAlias type="com.thecar.admin.notice.vo.NoticeVO"
+			alias="notice" />
+
+		<typeAlias type="com.thecar.admin.member.vo.AdminMemberVO"
+			alias="member" />
+
+		<typeAlias alias="adminLogin"
+			type="com.thecar.admin.login.vo.LoginVO" />
+
+		<typeAlias
+			type="com.thecar.admin.reservation.vo.AdminReservationVO"
+			alias="adminReservation" />
+
+		<!-- 답변 -->
+		<typeAlias type="com.thecar.admin.reply.vo.ReplyVO"
+			alias="reply"></typeAlias>
+
+		<!-- 문의글 -->
+		<typeAlias type="com.thecar.client.question.vo.QuestionVO"
+			alias="question"></typeAlias>
+
+		<!-- 상품(차량) -->
+		<typeAlias type="com.thecar.admin.product.vo.AdminProductVO"
+			alias="adminProduct"></typeAlias>
+
+
+	</typeAliases>
+
+</configuration>
+
+

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.thecar.client.question.dao.QuestionDao">
+
+	<!-- 검색 쿼리 분리 -->
+	<sql id="questionCommon">
+		SELECT
+		q_num,
+		m_id,
+		q_title,
+		q_rpState,
+		q_date
+		FROM question_tbl
+		<where>
+			<if test="search=='m_id'">
+				<![CDATA[ m_id LIKE '%'|| #{keyword} ||'%' ]]>
+			</if>
+		</where>
+	</sql>
+
+
+	<!-- 문의글 기본 조회 -->
+	<select id="questionList" parameterType="question"
+		resultType="question">
+		SELECT
+		q_num,
+		m_id,
+		q_title,
+		q_rpState,
+		to_char(q_date,'YYYY-MM-DD') as
+		q_date
+		FROM (
+		SELECT list.*, ROWNUM AS
+		RNUM
+		FROM (
+		<include refid="questionCommon"></include>
+		ORDER BY q_num DESC
+		) list
+		)
+		<where>
+			<if test="start_row != null and start_row != ''">
+				<if test="end_row != null and end_row != ''">
+					RNUM BETWEEN #{start_row} AND #{end_row}
+				</if>
+			</if>
+		</where>
+	</select>
+
+	<!-- 게시물 카운트 페이징 -->
+	<select id="questionListCnt" parameterType="question"
+		resultType="int">
+		SELECT NVL(count(1), 0)
+		FROM (
+		SELECT list.*,
+		ROWNUM AS RNUM
+		FROM (
+		<include refid="questionCommon"></include>
+		ORDER BY q_num DESC
+		) list
+		)
+	</select>
+
+	<!-- 상세 페이지를 위한 문의글 조회 -->
+	<select id="questionDetail" parameterType="int"
+		resultType="question">
+		SELECT
+		q_num,
+		m_id,
+		q_pwd,
+		q_title,
+		q_content,
+		q_file,
+		q_rpState,
+		to_char(q_date,'YYYY-MM-DD') as q_date
+		FROM question_tbl
+		WHERE q_num
+		=#{q_num}
+	</select>
+
+	<!-- 문의글 등록 -->
+	<insert id="questionInsert" parameterType="question">
+		<selectKey keyProperty="q_num" resultType="int"
+			order="BEFORE">
+			SELECT
+			question_seq.nextval FROM dual
+		</selectKey>
+		INSERT INTO
+		question_tbl (
+		q_num,
+		m_id,
+		q_title,
+		q_content,
+		<if test="q_file != null and q_file != ''">
+			q_file,
+		</if>
+		q_pwd,
+		q_rpState,
+		q_date)
+		VALUES(
+		#{q_num},
+		#{m_id},
+		#{q_title},
+		#{q_content},
+		<if test="q_file != null and q_file != ''">
+			#{q_file},
+		</if>
+		#{q_pwd},
+		#{q_rpState},
+		sysdate)
+	</insert>
+
+	<!-- 해당 문의글 번호의 비밀번호 확인 -->
+	<select id="pwdConfirm" parameterType="question"
+		resultType="int">
+		SELECT NVL((
+		SELECT 1
+		FROM question_tbl
+		WHERE q_num=#{q_num}
+		AND
+		q_pwd=#{q_pwd}),0)
+		as state FROM dual
+
+	</select>
+
+	<!-- 문의글 수정 -->
+	<update id="questionUpdate" parameterType="question">
+		UPDATE question_tbl
+		SET
+		q_title=#{q_title},
+		q_content=#{q_content},
+		q_rpState=#{q_rpState},
+		<if test="q_file != ''">
+			q_file = #{q_file},
+		</if>
+		<if test="q_pwd !=''">
+			q_pwd=#{q_pwd},
+		</if>
+		q_date=sysdate
+
+		WHERE
+		q_num = #{q_num}
+	</update>
+
+	<!-- 문의글 답변 상태 수정 -->
+	<update id="rpStateUpdate" parameterType="question">
+		UPDATE question_tbl
+		SET
+		q_rpState=#{q_rpState}
+		WHERE
+		q_num = #{q_num}
+	</update>
+
+
+	<!-- 문의글 삭제 -->
+	<delete id="questionDelete" parameterType="question">
+		DELETE FROM
+		question_tbl
+		WHERE
+		q_num = #{q_num}
+	</delete>
+
+</mapper>
